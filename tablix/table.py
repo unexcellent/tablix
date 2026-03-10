@@ -9,7 +9,7 @@ from tablix.format import Format
 class Field:
     """A formatted field."""
 
-    value: str | int | float | bool | None = None
+    value: str
     format: Format = field(default_factory=Format)
 
 
@@ -28,10 +28,13 @@ class Table:
     @classmethod
     def from_list(
         cls,
-        content: list[list[str | int | float | bool | None]],
-        headers: list[str],
+        content: list[list[str]],
+        headers: list[str] | None = None,
     ) -> Table:
         """Construct a Table from a list."""
+        if headers is None:
+            headers = content.pop(0)
+
         processed_headers = [Field(value, Format()) for value in headers]
         processed_content = [[Field(value, Format()) for value in row] for row in content]
         return Table(processed_headers, processed_content)
