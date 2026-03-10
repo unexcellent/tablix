@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from tablix.field import Field
 from tablix.format import Format
+from tablix.renderers.markdown import Markdown
 
 
 @dataclass
@@ -48,3 +49,7 @@ class Table:
             for row_number, row in enumerate(content)
         ]
         return Table(processed_headers, processed_content)
+
+    def to_markdown(self) -> Markdown:
+        """Convert this table to markdown format."""
+        return Markdown(self.headers, self.content)
