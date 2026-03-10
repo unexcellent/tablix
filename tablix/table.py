@@ -16,17 +16,17 @@ class Field:
     def from_value(
         cls,
         value: str | tuple[str, Format],
-        column_formats: list[Format],
+        column_formats: dict[int, Format],
         col: int,
-        row_formats: list[Format],
+        row_formats: dict[int, Format],
         row: int,
     ) -> Field:
         """Construct a field from either just a value or a value-format combination."""
         if isinstance(value, tuple):
             return Field(value[0], value[1])
 
-        format_ = column_formats[col] if col < len(column_formats) else Format.default()
-        format_ = row_formats[row] if row < len(row_formats) else format_
+        format_ = column_formats.get(col, Format.default())
+        format_ = row_formats.get(row, format_)
 
         return Field(value, format_)
 
@@ -48,18 +48,18 @@ class Table:
         cls,
         content: list[list[str | tuple[str, Format]]],
         headers: list[str | tuple[str, Format]] | None = None,
-        column_formats: list[Format] | None = None,
-        row_formats: list[Format] | None = None,
+        column_formats: dict[int, Format] | None = None,
+        row_formats: dict[int, Format] | None = None,
     ) -> Table:
         """Construct a Table from a list."""
         if headers is None:
             headers = content.pop(0)
 
         if column_formats is None:
-            column_formats = []
+            column_formats = {}
 
         if row_formats is None:
-            row_formats = []
+            row_formats = {}
 
         processed_headers = [
             Field.from_value(value, column_formats, col, row_formats, 0)
