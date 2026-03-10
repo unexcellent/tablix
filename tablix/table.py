@@ -14,13 +14,19 @@ class Field:
 
     @classmethod
     def from_value(
-        cls, value: str | tuple[str, Format], column_formats: list[Format], col: int
+        cls,
+        value: str | tuple[str, Format],
+        column_formats: list[Format],
+        col: int,
+        row_formats: list[Format],
+        row: int,
     ) -> Field:
         """Construct a field from either just a value or a value-format combination."""
         if isinstance(value, tuple):
             return Field(value[0], value[1])
 
         format_ = column_formats[col] if col < len(column_formats) else Format.default()
+        format_ = row_formats[row] if row < len(row_formats) else format_
 
         return Field(value, format_)
 
@@ -43,6 +49,7 @@ class Table:
         content: list[list[str | tuple[str, Format]]],
         headers: list[str | tuple[str, Format]] | None = None,
         column_formats: list[Format] | None = None,
+        row_formats: list[Format] | None = None,
     ) -> Table:
         """Construct a Table from a list."""
         if headers is None:
@@ -51,11 +58,18 @@ class Table:
         if column_formats is None:
             column_formats = []
 
+        if row_formats is None:
+            row_formats = []
+
         processed_headers = [
-            Field.from_value(value, column_formats, col) for col, value in enumerate(headers)
+            Field.from_value(value, column_formats, col, row_formats, 0)
+            for col, value in enumerate(headers)
         ]
         processed_content = [
-            [Field.from_value(value, column_formats, col) for col, value in enumerate(row)]
-            for row in content
+            [
+                Field.from_value(value, column_formats, col, row_formats, row_number + 1)
+                for col, value in enumerate(row)
+            ]
+            for row_number, row in enumerate(content)
         ]
         return Table(processed_headers, processed_content)
