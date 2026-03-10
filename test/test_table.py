@@ -26,7 +26,35 @@ def test_from_list_simple_without_headers():
 def test_from_list_with_field_specific_formatting():
     default = Format.default()
     bold = Format(bold=True)
-    table = Table.from_list([[("col1", bold), "col2"], [("f1", bold), "f1"]])
+    table = Table.from_list([[("col1", bold), "col2"], [("f1", bold), "f2"]])
 
     assert table.headers == [Field("col1", bold), Field("col2", default)]
-    assert table.content == [[Field("f1", bold), Field("f1", default)]]
+    assert table.content == [[Field("f1", bold), Field("f2", default)]]
+
+
+def test_from_list_with_column_specific_formatting():
+    default = Format.default()
+    bold = Format(bold=True)
+    table = Table.from_list(
+        [["col1", "col2"], ["f11", "f12"], ["f21", "f22"]], column_formats=[bold]
+    )
+
+    assert table.headers == [Field("col1", bold), Field("col2", default)]
+    assert table.content == [
+        [Field("f11", bold), Field("f12", default)],
+        [Field("f21", bold), Field("f22", default)],
+    ]
+
+
+def test_field_formatting_beats_column_formatting():
+    default = Format.default()
+    bold = Format(bold=True)
+    table = Table.from_list(
+        [["col1", "col2"], [("f11", default), "f12"], ["f21", "f22"]], column_formats=[bold]
+    )
+
+    assert table.headers == [Field("col1", bold), Field("col2", default)]
+    assert table.content == [
+        [Field("f11", default), Field("f12", default)],
+        [Field("f21", bold), Field("f22", default)],
+    ]

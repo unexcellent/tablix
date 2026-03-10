@@ -13,11 +13,16 @@ class Field:
     format: Format = field(default_factory=Format)
 
     @classmethod
-    def from_value(cls, value: str | tuple[str, Format]) -> Field:
+    def from_value(
+        cls, value: str | tuple[str, Format], column_formats: list[Format], col: int
+    ) -> Field:
         """Construct a field from either just a value or a value-format combination."""
         if isinstance(value, tuple):
             return Field(value[0], value[1])
-        return Field(value, Format.default())
+
+        format_ = column_formats[col] if col < len(column_formats) else Format.default()
+
+        return Field(value, format_)
 
 
 @dataclass
@@ -37,11 +42,20 @@ class Table:
         cls,
         content: list[list[str | tuple[str, Format]]],
         headers: list[str | tuple[str, Format]] | None = None,
+        column_formats: list[Format] | None = None,
     ) -> Table:
         """Construct a Table from a list."""
         if headers is None:
             headers = content.pop(0)
 
-        processed_headers = [Field.from_value(value) for value in headers]
-        processed_content = [[Field.from_value(value) for value in row] for row in content]
+        if column_formats is None:
+            column_formats = []
+
+        processed_headers = [
+            Field.from_value(value, column_formats, col) for col, value in enumerate(headers)
+        ]
+        processed_content = [
+            [Field.from_value(value, column_formats, col) for col, value in enumerate(row)]
+            for row in content
+        ]
         return Table(processed_headers, processed_content)
