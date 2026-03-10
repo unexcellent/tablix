@@ -12,6 +12,13 @@ class Field:
     value: str
     format: Format = field(default_factory=Format)
 
+    @classmethod
+    def from_value(cls, value: str | tuple[str, Format]) -> Field:
+        """Construct a field from either just a value or a value-format combination."""
+        if isinstance(value, tuple):
+            return Field(value[0], value[1])
+        return Field(value, Format.default())
+
 
 @dataclass
 class Table:
@@ -28,13 +35,13 @@ class Table:
     @classmethod
     def from_list(
         cls,
-        content: list[list[str]],
-        headers: list[str] | None = None,
+        content: list[list[str | tuple[str, Format]]],
+        headers: list[str | tuple[str, Format]] | None = None,
     ) -> Table:
         """Construct a Table from a list."""
         if headers is None:
             headers = content.pop(0)
 
-        processed_headers = [Field(value, Format()) for value in headers]
-        processed_content = [[Field(value, Format()) for value in row] for row in content]
+        processed_headers = [Field.from_value(value) for value in headers]
+        processed_content = [[Field.from_value(value) for value in row] for row in content]
         return Table(processed_headers, processed_content)
