@@ -113,9 +113,6 @@ def _format_field(field: _Field, span: int) -> str:
     elif field.format.align == "center":
         val = f"\\multicolumn{{1}}{{c}}{{{val}}}"
 
-    if span > 1:
-        val = f"\\multirow{{{span}}}{{*}}{{{val}}}"
-
     return val
 
 
