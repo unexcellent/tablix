@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Literal
 
 
 @dataclass
@@ -9,6 +10,7 @@ class Format:
 
     bold: bool = False
     italic: bool = False
+    align: Literal["left", "center", "right"] = "left"
 
     @classmethod
     def default(cls) -> Format:

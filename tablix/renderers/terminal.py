@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum, auto
+from math import ceil, floor
 
 from tablix._core import _Field, _Fields, _Rows
 from tablix.renderers._renderer import _Renderer
@@ -29,7 +30,15 @@ def _add_field_padding(table: _Rows) -> _Rows:
     for column in columns:
         width = len(max(column.fields, key=lambda field: len(field.value)).value)
         for field in column.fields:
-            field.value = field.value.ljust(width)
+            match field.format.align:
+                case "left":
+                    field.value = field.value.ljust(width)
+                case "right":
+                    field.value = field.value.rjust(width)
+                case "center":
+                    left_spaces = floor((width - len(field)) / 2)
+                    right_spaces = ceil((width - len(field)) / 2)
+                    field.value = " " * left_spaces + field.value + " " * right_spaces
 
     return _Rows(_Rows(columns).transpose)
 

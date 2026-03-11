@@ -27,3 +27,67 @@ def test_bold():
         "├────────┼──────┤",
         "│ value3 │ val4 │",
     ]
+
+
+def test_align_left():
+    rendered_table = Table.from_list(
+        [["col1", "col2"], [("value1", Format(align="left")), "val2"], ["very_long_value", "val4"]]
+    ).to_terminal()
+
+    assert rendered_table.lines() == [
+        "│ col1            │ col2 │",
+        "┝━━━━━━━━━━━━━━━━━┿━━━━━━┥",
+        "│ value1          │ val2 │",
+        "├─────────────────┼──────┤",
+        "│ very_long_value │ val4 │",
+    ]
+
+
+def test_align_right():
+    rendered_table = Table.from_list(
+        [["col1", "col2"], [("value1", Format(align="right")), "val2"], ["very_long_value", "val4"]]
+    ).to_terminal()
+
+    assert rendered_table.lines() == [
+        "│ col1            │ col2 │",
+        "┝━━━━━━━━━━━━━━━━━┿━━━━━━┥",
+        "│          value1 │ val2 │",
+        "├─────────────────┼──────┤",
+        "│ very_long_value │ val4 │",
+    ]
+
+
+def test_align_center_even():
+    rendered_table = Table.from_list(
+        [
+            ["col1", "col2"],
+            [("value1", Format(align="center")), "val2"],
+            ["very_long_value3", "val4"],
+        ]
+    ).to_terminal()
+
+    assert rendered_table.lines() == [
+        "│ col1             │ col2 │",
+        "┝━━━━━━━━━━━━━━━━━━┿━━━━━━┥",
+        "│      value1      │ val2 │",
+        "├──────────────────┼──────┤",
+        "│ very_long_value3 │ val4 │",
+    ]
+
+
+def test_align_center_odd():
+    rendered_table = Table.from_list(
+        [
+            ["col1", "col2"],
+            [("value1", Format(align="center")), "val2"],
+            ["very_long_value", "val4"],
+        ]
+    ).to_terminal()
+
+    assert rendered_table.lines() == [
+        "│ col1            │ col2 │",
+        "┝━━━━━━━━━━━━━━━━━┿━━━━━━┥",
+        "│     value1      │ val2 │",
+        "├─────────────────┼──────┤",
+        "│ very_long_value │ val4 │",
+    ]
