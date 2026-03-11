@@ -11,6 +11,7 @@ class Format:
     bold: bool = False
     italic: bool = False
     align: Literal["left", "center", "right"] = "left"
+    merge_same: bool = False
 
     @classmethod
     def default(cls) -> Format:

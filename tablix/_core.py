@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 
 from tablix.format import Format
@@ -71,3 +71,14 @@ class _Rows:
 
     def is_last(self, row: _Fields) -> bool:
         return row == self.rows[-1]
+
+    def enumerate(self) -> Iterable[tuple[int, int, _Field]]:
+        for r, row in enumerate(self.rows):
+            for c, field_ in enumerate(row.fields):
+                yield r, c, field_
+
+    def get(self, row: int, column: int) -> _Field | None:
+        try:
+            return self.rows[row].fields[column]
+        except IndexError:
+            return None

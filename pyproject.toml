@@ -31,6 +31,8 @@ ignore = [
     "D203", # incompatible with D211
     "D213", # incompatible with D212
 
+    "FBT001", # boolean positional args are fine imo
+
     "ISC001", # conflicts with ruff formatter
 
     "N802", # interferes with setting constant abstract properties

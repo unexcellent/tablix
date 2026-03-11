@@ -91,3 +91,45 @@ def test_align_center_odd():
         "├─────────────────┼──────┤",
         "│ very_long_value │ val4 │",
     ]
+
+
+def test_merge_two_fields():
+    rendered_table = Table.from_list(
+        [
+            ["col1", "col2"],
+            [("value1", Format(merge_same=True)), "val2"],
+            [("value1", Format(merge_same=True)), "val4"],
+            ["value5", "val6"],
+        ]
+    ).to_terminal()
+
+    assert rendered_table.lines() == [
+        "│ col1   │ col2 │",
+        "┝━━━━━━━━┿━━━━━━┥",
+        "│ value1 │ val2 │",
+        "│        ├──────┤",
+        "│        │ val4 │",
+        "├────────┼──────┤",
+        "│ value5 │ val6 │",
+    ]
+
+
+def test_merge_three_fields():
+    rendered_table = Table.from_list(
+        [
+            ["col1", "col2"],
+            [("value1", Format(merge_same=True)), "val2"],
+            [("value1", Format(merge_same=True)), "val4"],
+            [("value1", Format(merge_same=True)), "val6"],
+        ]
+    ).to_terminal()
+
+    assert rendered_table.lines() == [
+        "│ col1   │ col2 │",
+        "┝━━━━━━━━┿━━━━━━┥",
+        "│ value1 │ val2 │",
+        "│        ├──────┤",
+        "│        │ val4 │",
+        "│        ├──────┤",
+        "│        │ val6 │",
+    ]
