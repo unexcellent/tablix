@@ -31,8 +31,9 @@ class Latex(_Renderer):
         if self.caption:
             lines.append(f"    \\caption{{{self.caption}}}")
 
-        col_def = "|" + "|".join(["X"] * num_cols) + "|"
-        lines.append(f"    \\begin{{tabularx}}{{\\textwidth}}{{{col_def}}}")
+        lines.append(
+            f"    \\begin{{tabularx}}{{\\textwidth}}{{{_construct_column_definitions(self._table)}}}"
+        )
 
         for r, row in enumerate(self._table.rows):
             lines.append(_stringify_latex_row(r, row, merge_spans, num_cols))
@@ -68,6 +69,22 @@ def _calculate_merge_spans(table: _Rows) -> dict[tuple[int, int], int]:
             spans[(r, c)] = span
             span = 1
     return spans
+
+
+def _construct_column_definitions(table: _Rows) -> str:
+    column_widths = [
+        len(max(column.fields, key=lambda f: len(f.value)).value) for column in table.transpose
+    ]
+    widest_column_index = column_widths.index(max(column_widths))
+
+    column_definitions = "|"
+    for i in range(len(column_widths)):
+        if i == widest_column_index:
+            column_definitions += "X|"
+        else:
+            column_definitions += "l|"
+
+    return column_definitions
 
 
 def _stringify_latex_row(

@@ -3,14 +3,14 @@ from tablix import Table, Format
 
 def test_simple():
     rendered_table = Table.from_list(
-        [["col1", "col2"], ["value1", "val2"], ["value3", "val4"]]
+        [["col1", "column2"], ["value1", "val2"], ["value3", "val4"]]
     ).to_latex()
 
     assert rendered_table.lines() == [
         "\\begin{table}[h]",
         "    \\centering",
-        "    \\begin{tabularx}{\\textwidth}{|X|X|}",
-        "        \\hline col1 & col2 \\\\",
+        "    \\begin{tabularx}{\\textwidth}{|l|X|}",
+        "        \\hline col1 & column2 \\\\",
         "        \\hline value1 & val2 \\\\",
         "        \\hline value3 & val4 \\\\",
         "        \\hline",
@@ -28,7 +28,7 @@ def test_label():
         "\\begin{table}[h]",
         "    \\centering",
         "    \\label{tbl:my-label}",
-        "    \\begin{tabularx}{\\textwidth}{|X|X|}",
+        "    \\begin{tabularx}{\\textwidth}{|X|l|}",
         "        \\hline col1 & col2 \\\\",
         "        \\hline value1 & val2 \\\\",
         "        \\hline value3 & val4 \\\\",
@@ -47,7 +47,7 @@ def test_caption():
         "\\begin{table}[h]",
         "    \\centering",
         "    \\caption{My Nice Table}",
-        "    \\begin{tabularx}{\\textwidth}{|X|X|}",
+        "    \\begin{tabularx}{\\textwidth}{|X|l|}",
         "        \\hline col1 & col2 \\\\",
         "        \\hline value1 & val2 \\\\",
         "        \\hline value3 & val4 \\\\",
@@ -65,7 +65,7 @@ def test_bold():
     assert rendered_table.lines() == [
         "\\begin{table}[h]",
         "    \\centering",
-        "    \\begin{tabularx}{\\textwidth}{|X|X|}",
+        "    \\begin{tabularx}{\\textwidth}{|X|l|}",
         "        \\hline col1 & col2 \\\\",
         "        \\hline \\textbf{value1} & val2 \\\\",
         "        \\hline value3 & val4 \\\\",
@@ -83,7 +83,7 @@ def test_align_right():
     assert rendered_table.lines() == [
         "\\begin{table}[h]",
         "    \\centering",
-        "    \\begin{tabularx}{\\textwidth}{|X|X|}",
+        "    \\begin{tabularx}{\\textwidth}{|X|l|}",
         "        \\hline col1 & col2 \\\\",
         "        \\hline \\multicolumn{1}{r}{value1} & val2 \\\\",
         "        \\hline very_long_value & val4 \\\\",
@@ -105,7 +105,7 @@ def test_align_center():
     assert rendered_table.lines() == [
         "\\begin{table}[h]",
         "    \\centering",
-        "    \\begin{tabularx}{\\textwidth}{|X|X|}",
+        "    \\begin{tabularx}{\\textwidth}{|X|l|}",
         "        \\hline col1 & col2 \\\\",
         "        \\hline \\multicolumn{1}{c}{value1} & val2 \\\\",
         "        \\hline very_long_value & val4 \\\\",
@@ -128,7 +128,7 @@ def test_merge_two_fields():
     assert rendered_table.lines() == [
         "\\begin{table}[h]",
         "    \\centering",
-        "    \\begin{tabularx}{\\textwidth}{|X|X|X|}",
+        "    \\begin{tabularx}{\\textwidth}{|X|l|l|}",
         "        \\hline col1 & col2 & col3 \\\\",
         "        \\hline \\multirow{2}{*}{value1} & val2 & val3 \\\\",
         "        \\cline{2-3} & val5 & val6 \\\\",
@@ -152,7 +152,7 @@ def test_merge_three_fields():
     assert rendered_table.lines() == [
         "\\begin{table}[h]",
         "    \\centering",
-        "    \\begin{tabularx}{\\textwidth}{|X|X|X|}",
+        "    \\begin{tabularx}{\\textwidth}{|X|l|l|}",
         "        \\hline col1 & col2 & col3 \\\\",
         "        \\hline \\multirow{3}{*}{value1} & val2 & val3 \\\\",
         "        \\cline{2-3} & val5 & val6 \\\\",
