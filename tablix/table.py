@@ -58,3 +58,6 @@ class Table:
     def to_terminal(self) -> Terminal:
         """Convert this table to format that can be pretty-printed to the terminal."""
         return Terminal(self.headers, self.content)
+
+    def __str__(self) -> str:
+        return self.to_terminal().__str__()

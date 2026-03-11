@@ -9,5 +9,5 @@ class _Renderer(ABC):
     def __str__(self) -> str:
         string = ""
         for line in self.lines():
-            string += line
-        return string
+            string += line + "\n"
+        return string[:-1]
