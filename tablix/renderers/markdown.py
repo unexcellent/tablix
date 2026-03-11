@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 
 from tablix import Field
+from tablix.renderers._renderer import _Renderer
 
 
 @dataclass
-class Markdown:
+class Markdown(_Renderer):
     """The renderer for the markdown table format."""
 
     headers: list[Field]

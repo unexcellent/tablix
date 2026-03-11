@@ -2,10 +2,11 @@ from dataclasses import dataclass
 from enum import Enum, auto
 
 from tablix import Field
+from tablix.renderers._renderer import _Renderer
 
 
 @dataclass
-class Terminal:
+class Terminal(_Renderer):
     """The renderer for pretty-printing the table into the terminal."""
 
     headers: list[Field]
