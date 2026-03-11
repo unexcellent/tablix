@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from tablix.field import Field
 from tablix.format import Format
 from tablix.renderers.markdown import Markdown
+from tablix.renderers.terminal import Terminal
 
 
 @dataclass
@@ -53,3 +54,7 @@ class Table:
     def to_markdown(self) -> Markdown:
         """Convert this table to markdown format."""
         return Markdown(self.headers, self.content)
+
+    def to_terminal(self) -> Terminal:
+        """Convert this table to format that can be pretty-printed to the terminal."""
+        return Terminal(self.headers, self.content)
