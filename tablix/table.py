@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from tablix._core import _Field, _Fields, _Rows
 from tablix.format import Format
+from tablix.renderers.latex import Latex
 from tablix.renderers.terminal import Terminal
 
 
@@ -37,6 +38,10 @@ class Table:
     def to_terminal(self) -> Terminal:
         """Convert this table to format that can be pretty-printed to the terminal."""
         return Terminal(self._rows)
+
+    def to_latex(self, label: str | None = None, caption: str | None = None) -> Latex:
+        """Convert this table to LaTeX format."""
+        return Latex(self._rows, label, caption)
 
     def __str__(self) -> str:
         return self.to_terminal().__str__()
