@@ -35,6 +35,8 @@ def _add_field_padding(table: _Rows) -> _Rows:
         for field in column.fields:
             new_val = field.value
             match field.format.align:
+                case "auto":
+                    new_val = field.value.ljust(width)
                 case "left":
                     new_val = field.value.ljust(width)
                 case "right":

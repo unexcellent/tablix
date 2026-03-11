@@ -10,7 +10,7 @@ class Format:
 
     bold: bool = False
     italic: bool = False
-    align: Literal["left", "center", "right"] = "left"
+    align: Literal["auto", "left", "center", "right"] = "auto"
     merge_same: bool = False
 
     @classmethod

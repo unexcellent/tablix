@@ -16,7 +16,7 @@ class Table:
     @classmethod
     def from_list(
         cls,
-        content: list[list[str | tuple[str, Format]]],
+        content: list[list[str | int | float | bool | tuple[str | int | float | bool, Format]]],
         column_formats: dict[int, Format] | None = None,
         row_formats: dict[int, Format] | None = None,
     ) -> Table:

@@ -111,3 +111,20 @@ def test_row_formatting_beats_column_formatting():
             _Fields([_Field("f21", bold), _Field("f22", default)]),
         ]
     )
+
+
+def test_auto_alignment_based_on_type():
+    default = Format.default()
+    left = Format(align="left")
+    right = Format(align="right")
+    table = Table.from_list(
+        [["col1", "col2"], ["f11", 12], [True, 3.14]],
+    )
+
+    assert table._rows == _Rows(
+        [
+            _Fields([_Field("col1", default), _Field("col2", default)]),
+            _Fields([_Field("f11", default), _Field("12", right)]),
+            _Fields([_Field("True", left), _Field("3.14", left)]),
+        ]
+    )
