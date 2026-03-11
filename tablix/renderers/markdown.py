@@ -46,4 +46,6 @@ def _determine_column_lengths(
 def _stringify_format(field: Field) -> str:
     if field.format.bold:
         return f"**{field.value}**"
+    if field.format.italic:
+        return f"__{field.value}__"
     return field.value
