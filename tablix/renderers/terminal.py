@@ -14,17 +14,20 @@ class Terminal(_Renderer):
 
     def lines(self) -> list[str]:
         """Return the string for each line of this table."""
+        if not self._table.rows:
+            return []
+
         table = _add_field_padding(self._table)
         separators = _construct_separators(table)
         table = _blank_merged_fields(table)
         table = table.apply(_apply_format)
 
-        lines = []
-        for row, separator in zip(table.rows, separators, strict=True):
+        lines = [separators[0]]
+        for row, separator in zip(table.rows, separators[1:], strict=True):
             lines.append(_stringify_row(row))
             lines.append(separator)
 
-        return lines[:-1]
+        return lines
 
 
 def _add_field_padding(table: _Rows) -> _Rows:
@@ -88,15 +91,64 @@ def _stringify_row(row: _Fields) -> str:
 
 
 class _SeparatorType(Enum):
+    TOP = auto()
+    BOTTOM = auto()
     NORMAL = auto()
     BOLD = auto()
 
+    @property
+    def fill_char(self) -> str:
+        return "━" if self == _SeparatorType.BOLD else "─"
+
+    def intersection(self, left_line: bool, right_line: bool) -> str:  # noqa: C901, PLR0911, PLR0912
+        match self, left_line, right_line:
+            case _SeparatorType.TOP, False, False:
+                return " "
+            case _SeparatorType.TOP, False, True:
+                return "╭"
+            case _SeparatorType.TOP, True, False:
+                return "╮"
+            case _SeparatorType.TOP, True, True:
+                return "┬"
+
+            case _SeparatorType.BOTTOM, False, False:
+                return " "
+            case _SeparatorType.BOTTOM, False, True:
+                return "╰"
+            case _SeparatorType.BOTTOM, True, False:
+                return "╯"
+            case _SeparatorType.BOTTOM, True, True:
+                return "┴"
+
+            case _SeparatorType.NORMAL, False, False:
+                return "│"
+            case _SeparatorType.NORMAL, False, True:
+                return "├"
+            case _SeparatorType.NORMAL, True, False:
+                return "┤"
+            case _SeparatorType.NORMAL, True, True:
+                return "┼"
+
+            case _SeparatorType.BOLD, False, False:
+                return "│"
+            case _SeparatorType.BOLD, False, True:
+                return "┝"
+            case _SeparatorType.BOLD, True, False:
+                return "┥"
+            case _SeparatorType.BOLD, True, True:
+                return "┿"
+        raise RuntimeError
+
 
 def _construct_separators(table: _Rows) -> list[str]:
-    separators = []
+    if not table.rows:
+        return []
+
+    separators = [_construct_separator_line(None, table.rows[0], _SeparatorType.TOP)]
+
     for r, row in enumerate(table.rows):
         if table.is_last(row):
-            separators.append("")
+            separators.append(_construct_separator_line(row, None, _SeparatorType.BOTTOM))
             continue
 
         separator_type = _SeparatorType.BOLD if table.is_first(row) else _SeparatorType.NORMAL
@@ -106,53 +158,36 @@ def _construct_separators(table: _Rows) -> list[str]:
     return separators
 
 
-def _get_intersection(left_line: bool, right_line: bool) -> str:
-    match left_line, right_line:
-        case False, False:
-            return "│"
-        case False, True:
-            return "├"
-        case True, False:
-            return "┤"
-        case True, True:
-            return "┼"
-    raise RuntimeError
-
-
 def _construct_separator_line(
-    row: _Fields, next_row: _Fields, separator_type: _SeparatorType
+    row: _Fields | None, next_row: _Fields | None, separator_type: _SeparatorType
 ) -> str:
-    if separator_type == _SeparatorType.BOLD:
-        line = "┝"
-        for i, field in enumerate(row.fields):
-            line += "━" * (len(field) + 2)
-            if i < len(row.fields) - 1:
-                line += "┿"
+    reference_row = row if row is not None else next_row
+    if reference_row is None:
+        raise RuntimeError
 
-        line += "┥"
-        return line
-
-    if separator_type == _SeparatorType.NORMAL:
+    if separator_type in (_SeparatorType.TOP, _SeparatorType.BOTTOM, _SeparatorType.BOLD):
+        merges = [False] * len(reference_row.fields)
+    elif row is not None and next_row is not None:
         merges = [
             field.format.merge_same
             and next_field.format.merge_same
             and field.value == next_field.value
             for field, next_field in zip(row.fields, next_row.fields, strict=True)
         ]
+    else:
+        raise RuntimeError
 
-        line = ""
-        for i, field in enumerate(row.fields):
-            left_line = False if i == 0 else not merges[i - 1]
-            right_line = not merges[i]
+    line = ""
+    for i, field in enumerate(reference_row.fields):
+        left_line = False if i == 0 else not merges[i - 1]
+        right_line = not merges[i]
 
-            line += _get_intersection(left_line, right_line)
-            fill_char = " " if merges[i] else "─"
-            line += fill_char * (len(field) + 2)
+        line += separator_type.intersection(left_line, right_line)
+        fill_char = separator_type.fill_char if not merges[i] else " "
+        line += fill_char * (len(field) + 2)
 
-        left_line = not merges[-1]
-        right_line = False
-        line += _get_intersection(left_line, right_line)
+    left_line = not merges[-1]
+    right_line = False
+    line += separator_type.intersection(left_line, right_line)
 
-        return line
-
-    raise RuntimeError
+    return line

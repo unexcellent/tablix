@@ -7,11 +7,13 @@ def test_simple():
     ).to_terminal()
 
     assert rendered_table.lines() == [
+        "╭────────┬──────╮",
         "│ col1   │ col2 │",
         "┝━━━━━━━━┿━━━━━━┥",
         "│ value1 │ val2 │",
         "├────────┼──────┤",
         "│ value3 │ val4 │",
+        "╰────────┴──────╯",
     ]
 
 
@@ -21,11 +23,13 @@ def test_bold():
     ).to_terminal()
 
     assert rendered_table.lines() == [
+        "╭────────┬──────╮",
         "│ col1   │ col2 │",
         "┝━━━━━━━━┿━━━━━━┥",
         "│ \033[1mvalue1\033[0m │ val2 │",  # column width looks weird here but is fine when printing
         "├────────┼──────┤",
         "│ value3 │ val4 │",
+        "╰────────┴──────╯",
     ]
 
 
@@ -35,11 +39,13 @@ def test_align_auto_to_the_left():
     ).to_terminal()
 
     assert rendered_table.lines() == [
+        "╭─────────────────┬──────╮",
         "│ col1            │ col2 │",
         "┝━━━━━━━━━━━━━━━━━┿━━━━━━┥",
         "│ value1          │ val2 │",
         "├─────────────────┼──────┤",
         "│ very_long_value │ val4 │",
+        "╰─────────────────┴──────╯",
     ]
 
 
@@ -49,11 +55,13 @@ def test_align_left():
     ).to_terminal()
 
     assert rendered_table.lines() == [
+        "╭─────────────────┬──────╮",
         "│ col1            │ col2 │",
         "┝━━━━━━━━━━━━━━━━━┿━━━━━━┥",
         "│ value1          │ val2 │",
         "├─────────────────┼──────┤",
         "│ very_long_value │ val4 │",
+        "╰─────────────────┴──────╯",
     ]
 
 
@@ -63,11 +71,13 @@ def test_align_right():
     ).to_terminal()
 
     assert rendered_table.lines() == [
+        "╭─────────────────┬──────╮",
         "│ col1            │ col2 │",
         "┝━━━━━━━━━━━━━━━━━┿━━━━━━┥",
         "│          value1 │ val2 │",
         "├─────────────────┼──────┤",
         "│ very_long_value │ val4 │",
+        "╰─────────────────┴──────╯",
     ]
 
 
@@ -81,11 +91,13 @@ def test_align_center_even():
     ).to_terminal()
 
     assert rendered_table.lines() == [
+        "╭──────────────────┬──────╮",
         "│ col1             │ col2 │",
         "┝━━━━━━━━━━━━━━━━━━┿━━━━━━┥",
         "│      value1      │ val2 │",
         "├──────────────────┼──────┤",
         "│ very_long_value3 │ val4 │",
+        "╰──────────────────┴──────╯",
     ]
 
 
@@ -99,11 +111,13 @@ def test_align_center_odd():
     ).to_terminal()
 
     assert rendered_table.lines() == [
+        "╭─────────────────┬──────╮",
         "│ col1            │ col2 │",
         "┝━━━━━━━━━━━━━━━━━┿━━━━━━┥",
         "│     value1      │ val2 │",
         "├─────────────────┼──────┤",
         "│ very_long_value │ val4 │",
+        "╰─────────────────┴──────╯",
     ]
 
 
@@ -118,6 +132,7 @@ def test_merge_two_fields():
     ).to_terminal()
 
     assert rendered_table.lines() == [
+        "╭────────┬──────╮",
         "│ col1   │ col2 │",
         "┝━━━━━━━━┿━━━━━━┥",
         "│ value1 │ val2 │",
@@ -125,6 +140,7 @@ def test_merge_two_fields():
         "│        │ val4 │",
         "├────────┼──────┤",
         "│ value5 │ val6 │",
+        "╰────────┴──────╯",
     ]
 
 
@@ -139,6 +155,7 @@ def test_merge_three_fields():
     ).to_terminal()
 
     assert rendered_table.lines() == [
+        "╭────────┬──────╮",
         "│ col1   │ col2 │",
         "┝━━━━━━━━┿━━━━━━┥",
         "│ value1 │ val2 │",
@@ -146,4 +163,5 @@ def test_merge_three_fields():
         "│        │ val4 │",
         "│        ├──────┤",
         "│        │ val6 │",
+        "╰────────┴──────╯",
     ]
