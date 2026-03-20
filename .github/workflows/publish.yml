@@ -1,0 +1,51 @@
+name: publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for Trusted Publishing
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Check version existence
+        id: version_check
+        run: |
+          PACKAGE_NAME=$(poetry version | cut -d' ' -f1)
+          VERSION=$(poetry version -s)
+
+          # Query PyPI API to see if this version is already live
+          EXISTS=$(python -c "
+          import urllib.request, json, sys
+          try:
+              with urllib.request.urlopen(f'https://pypi.org/pypi/{sys.argv[1]}/json') as r:
+                  data = json.load(r)
+                  print(str(sys.argv[2] in data.get('releases', {})).lower())
+          except Exception:
+              print('false')
+          " "$PACKAGE_NAME" "$VERSION")
+
+          echo "exists=$EXISTS" >> "$GITHUB_OUTPUT"
+
+      - name: Build distribution
+        if: steps.version_check.outputs.exists == 'false'
+        run: poetry build
+
+      - name: Publish to PyPI
+        if: steps.version_check.outputs.exists == 'false'
+        uses: pypa/gh-action-pypi-publish@release/v1
