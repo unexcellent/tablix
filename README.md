@@ -1,7 +1,3 @@
-A python package for complex tables with fine-grained formatting.
-
-# Installation
-
 # Standout Features
 
 Yes, this is yet another table renderer in python just like [`tabulate`](https://github.com/astanin/python-tabulate), [`prettytable`](https://github.com/prettytable/prettytable) and many others. However, this one has some unique features that the others lack.
@@ -17,6 +13,12 @@ In short
 | Years of Bugfixing           | **No**        | Yes        |
 | Robust Community Support     | **No**        | Yes        |
 | Fine-Grained Formatting      | **Hell Yeah** | No         |
+
+# Installation
+
+```bash
+pip install tablix
+```
 
 # Examples
 
@@ -202,7 +204,7 @@ table = Table.from_list(
 rendered_table = table.to_markdown()
 print(rendered_table)
 ```
-```bash
+```markdown
 | Item     | Price |
 | :------- | :---- |
 | Beer     | 1.14  |
@@ -224,7 +226,7 @@ table = Table.from_list(
 rendered_table = table.to_latex()
 print(rendered_table)
 ```
-```bash
+```latex
 \begin{table}[h]
     \centering
     \begin{tabularx}{\textwidth}{|X|l|}
