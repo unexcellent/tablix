@@ -16,7 +16,7 @@ In short
 | Rendering in Dozens of Forms | **No**        | Yes        |
 | Years of Bugfixing           | **No**        | Yes        |
 | Robust Community Support     | **No**        | Yes        |
-| Fine-Grained Formatting      | **Hell Yeah** | no         |
+| Fine-Grained Formatting      | **Hell Yeah** | No         |
 
 # Examples
 
